@@ -1,0 +1,57 @@
+feature,area,priority,original,clone,notes
+Home with size presets,home,must,yes,yes,
+Recent designs (local),home,must,yes,yes,
+Custom size dialog,home,must,yes,yes,
+Template gallery with categories + search,templates,must,yes,yes,original templates
+Apply template to page,editor,must,yes,yes,
+Canvas select/move/resize/rotate,editor,must,yes,yes,
+Snapping guides,editor,should,yes,yes,
+Multi-select / group / ungroup,editor,must,yes,yes,
+Undo / redo,editor,must,yes,yes,
+Copy / paste / duplicate / delete,editor,must,yes,yes,
+Lock element,editor,should,yes,yes,
+Layer order + layers list,editor,must,yes,yes,
+Align to page / distribute,editor,should,yes,yes,
+Exact position/size inputs,editor,could,yes,yes,
+Zoom + fit,editor,must,yes,yes,
+Context menu,editor,should,yes,yes,
+Keyboard shortcuts,editor,must,yes,yes,
+Autosave locally,editor,must,yes,yes,
+Multi-page add/duplicate/delete/reorder,editor,must,yes,yes,
+Shapes,elements,must,yes,yes,
+Lines and arrows,elements,must,yes,yes,
+Frames (image masks),elements,should,yes,yes,
+Graphics / stickers,elements,must,yes,yes,original SVGs
+Gradients,elements,should,yes,yes,
+Elements search,elements,should,yes,yes,
+Add heading/subheading/body,text,must,yes,yes,
+Font combos,text,should,yes,yes,
+Font family/size/colour/bold/italic/underline/align,text,must,yes,yes,
+Letter spacing / line height / case,text,should,yes,yes,
+Text effects (shadow / outline / background),text,should,yes,yes,
+Upload images (drag & drop),uploads,must,yes,yes,
+Uploads persisted,uploads,should,yes,yes,
+Background removal,photo,must,yes,yes,AI models load from Hugging Face on first use; offline colour-key fallback
+Erase/restore brush after BG removal,photo,could,yes,no,not built yet
+Photo filters presets,photo,must,yes,yes,
+Photo adjustments sliders,photo,must,yes,yes,
+Crop,photo,should,yes,partial,"slider-based zoom/pan, not drag handles"
+Flip H/V,photo,must,yes,yes,
+Transparency,editor,must,yes,yes,
+Colour picker with document colours,editor,must,yes,yes,
+Eyedropper,editor,could,yes,partial,Chromium/Edge only (EyeDropper API)
+Page background colour/gradient/image,background,must,yes,yes,
+Freehand draw,draw,should,yes,yes,
+Resize design,editor,should,yes,yes,
+Download PNG/JPG,export,must,yes,yes,
+Download PDF multi-page,export,must,yes,yes,
+Download SVG,export,should,yes,yes,
+Transparent background export,export,should,yes,yes,
+Export size multiplier,export,should,yes,yes,
+Mobile layout,editor,should,yes,yes,
+Stock photo library,photos,skip,yes,skip,licensed content
+Accounts / login,platform,skip,yes,skip,out of scope by request
+Payments / Pro,platform,skip,yes,skip,out of scope by request
+Real-time collaboration / sharing,platform,skip,yes,skip,needs backend
+AI generation (text/image),ai,skip,yes,skip,needs paid model APIs
+Video editing,video,skip,yes,skip,different product

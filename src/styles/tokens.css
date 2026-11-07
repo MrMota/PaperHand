@@ -1,0 +1,16 @@
+/* Generated from replica/design/tokens.json — edit values there and here together. */
+:root {
+  --bg: #F3F2EF; --surface: #FFFFFF; --surface-2: #F7F6F3; --surface-hover: #EDEBE6;
+  --border: #E2DFD8; --border-input: #8F8A80;
+  --text: #1E1B16; --text-muted: #5E5850;
+  --accent: #B7410E; --accent-hover: #9A360B; --on-accent: #FFFFFF; --accent-soft: #FBE9DF;
+  --stage: #E8E6E1; --rail: #1E1B16; --on-rail: #E9E4DA; --on-rail-muted: #B4AC9F;
+  --danger: #B42318; --success: #167A3E; --warning: #8A5A00; --focus: #1D5FD1;
+  --font-ui: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --fs-xs: 12px; --fs-sm: 13px; --fs-md: 14px; --fs-lg: 16px; --fs-xl: 20px; --fs-2xl: 28px; --fs-3xl: 40px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s7: 32px; --s8: 40px; --s9: 48px; --s10: 64px;
+  --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px;
+  --sh-sm: 0 1px 2px rgb(0 0 0 / .08); --sh-md: 0 4px 16px rgb(0 0 0 / .12); --sh-lg: 0 12px 40px rgb(0 0 0 / .18);
+  --header-h: 56px; --rail-w: 72px; --panel-w: 340px; --toolbar-h: 48px;
+}
