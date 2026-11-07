@@ -1,11 +1,18 @@
 # Builds the Android APK from source and publishes it as a GitHub Release.
-# Trigger: push a version tag, e.g.  git tag v1.0.1 && git push origin v1.0.1
+# Trigger either way:
+#   - push a version tag:   git tag v1.0.1 && git push origin v1.0.1
+#   - or Actions → "Android release" → Run workflow, with a version like v1.0.1 (GitHub creates the tag)
 name: Android release
 
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, e.g. v1.0.1 (leave empty for a test build without a release)'
+        required: false
+        default: ''
 
 permissions:
   contents: write   # create the release and upload the APK
@@ -40,12 +47,15 @@ jobs:
       - name: Name the APK after the version
         id: apk
         run: |
-          VERSION="${GITHUB_REF_NAME}"
-          [ "${GITHUB_REF_TYPE}" = "tag" ] || VERSION="dev-${GITHUB_SHA::7}"
+          VERSION="${{ inputs.version }}"
+          [ -n "$VERSION" ] || VERSION="${GITHUB_REF_NAME}"
+          [ "${GITHUB_REF_TYPE}" = "tag" ] || [ -n "${{ inputs.version }}" ] || VERSION="dev-${GITHUB_SHA::7}"
+          case "$VERSION" in v*|dev-*) ;; *) echo "version must start with v, e.g. v1.0.1"; exit 1;; esac
           OUT="paperhand-${VERSION}-debug.apk"
           cp android/app/build/outputs/apk/debug/app-debug.apk "$OUT"
           sha256sum "$OUT" > "$OUT.sha256"
           echo "file=$OUT" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "sha=$(cut -d' ' -f1 "$OUT.sha256")" >> "$GITHUB_OUTPUT"
 
       - name: Keep the APK as a build artifact
@@ -57,10 +67,12 @@ jobs:
             ${{ steps.apk.outputs.file }}.sha256
 
       - name: Publish the release
-        if: github.ref_type == 'tag'
+        if: github.ref_type == 'tag' || inputs.version != ''
         uses: softprops/action-gh-release@v2
         with:
-          name: Paperhand ${{ github.ref_name }}
+          tag_name: ${{ steps.apk.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: Paperhand ${{ steps.apk.outputs.version }}
           files: |
             ${{ steps.apk.outputs.file }}
             ${{ steps.apk.outputs.file }}.sha256
