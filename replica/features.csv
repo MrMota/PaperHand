@@ -55,3 +55,21 @@ Payments / Pro,platform,skip,yes,skip,out of scope by request
 Real-time collaboration / sharing,platform,skip,yes,skip,needs backend
 AI generation (text/image),ai,skip,yes,skip,needs paid model APIs
 Video editing,video,skip,yes,skip,different product
+Present mode (full-screen slideshow),editor,should,yes,no,added at diff time
+Resize into a copy (keep original),editor,should,yes,partial,added at diff time; resize changes the design in place
+Search recent designs,home,should,yes,no,added at diff time
+Curved text,text,should,yes,no,added at diff time
+Charts from data,elements,should,yes,no,added at diff time
+Tables,elements,should,yes,no,added at diff time
+Photo grids / collage layouts,elements,should,yes,no,added at diff time
+Bulleted lists,text,could,yes,yes,added at diff time
+QR code generator,elements,could,yes,no,added at diff time
+Rulers and custom guides,editor,could,yes,no,added at diff time
+Page grid view,editor,could,yes,no,added at diff time
+Speaker notes,editor,could,yes,no,added at diff time
+Animated export (GIF/MP4),export,could,yes,no,added at diff time
+Folders / starred designs,home,could,yes,no,added at diff time
+Duotone photo effect,photo,could,yes,no,added at diff time
+Version history,editor,could,yes,no,added at diff time; possible locally
+Spell check in text,text,could,yes,no,added at diff time
+Cloud sync across devices,platform,skip,yes,skip,needs accounts and a backend
