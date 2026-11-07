@@ -3,6 +3,8 @@ import { Copy, LayoutTemplate, MoreHorizontal, Pencil, Plus, Ruler, Trash2, Spar
 import { backupEverything, deleteEverything, downloadDesignFile, importFile } from '../store/backup';
 import { loadDesign } from '../store/db';
 import { LegalFooter } from './Legal';
+import { canInstall, promptInstall } from '../platform/pwa';
+import { Download as DownloadIcon } from 'lucide-react';
 import { Btn, Chips, Logo, Modal, Search, useToast } from './ui';
 import { TemplateCard } from './TemplateCard';
 import { FORMATS, TEMPLATES, TEMPLATE_CATEGORIES, type Template } from '../content/templates';
@@ -58,6 +60,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
           <a href="#/templates" aria-current={showAll ? 'page' : undefined}>Templates</a>
           <a href="#/about">About</a>
         </nav>
+        <InstallButton />
         <Btn variant="primary" onClick={() => setCustom(true)}><Plus size={16} /> New design</Btn>
       </header>
 
@@ -162,6 +165,13 @@ function DesignCard({ d, onChange }: { d: DesignMeta; onChange: () => void }) {
       </div>
     </div>
   );
+}
+
+function InstallButton() {
+  const [ok, setOk] = useState(canInstall());
+  useEffect(() => { const on = () => setOk(canInstall()); window.addEventListener('pg-installable', on); return () => window.removeEventListener('pg-installable', on); }, []);
+  if (!ok) return null;
+  return <Btn variant="secondary" onClick={promptInstall}><DownloadIcon size={16} /> <span className="hide-xs">Install app</span></Btn>;
 }
 
 function DataActions({ count, onChange }: { count: number; onChange: () => void }) {
