@@ -25,7 +25,7 @@ export function Toolbar({ ed, open, setOpen }: { ed: Editor; open: (p: ContextPa
     return (
       <div className="toolbar" role="toolbar" aria-label="Page tools">
         <Swatch color={ed.canvas.backgroundColor} label="Page background colour" onClick={() => open({ color: 'page' })} />
-        <span className="tb-hint">Select an element to edit it · Drop images anywhere on the page</span>
+        <span className="tb-hint">Click anything to edit it · Drop photos straight onto the page</span>
       </div>
     );
   }

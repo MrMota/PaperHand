@@ -1,4 +1,4 @@
-// Pigment's own template collection. Layouts × palettes × copy — all written for this project.
+// Paperhand's own template collection. Layouts × palettes × copy — all written for this project.
 import type { PageSpec, Spec } from './spec';
 import { STICKERS } from './stickers';
 import type { FillSpec } from './palette';

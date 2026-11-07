@@ -1,0 +1,9 @@
+{
+  "name": "Paperhand",
+  "retired": ["Pigment"],
+  "avoid": ["Canva"],
+  "domains": ["canva.com", "canva.dev", "canva.link"],
+  "colors": ["#00C4CC", "#7D2AE8", "#8B3DFF"],
+  "near": 36,
+  "ignore": ["node_modules", "dist", ".git", "replica", "test-results", "playwright-report", "e2e-results.json", "package-lock.json"]
+}

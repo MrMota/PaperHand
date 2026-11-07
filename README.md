@@ -1,6 +1,6 @@
-# Pigment
+# Paperhand
 
-A free, private design studio that runs entirely in your browser. No login, no payments, no server.
+A free design studio for making things by hand. No account, no generative AI, nothing locked, no server.
 
 - **61 templates** across 14 formats (posts, stories, presentations, posters, flyers, thumbnails, banners, business cards, logos, invitations, resumes, certificates…)
 - **100+ elements**: shapes, lines & arrows, original illustrations, photo frames, gradients, generated photos & textures
@@ -29,7 +29,7 @@ Runs in a Web Worker with [transformers.js](https://github.com/huggingface/trans
 | People | `Xenova/modnet` | Apache-2.0 | ~25 MB |
 | Plain backgrounds | built-in flood fill | — | none, works offline |
 
-Uses WebGPU when available, WASM otherwise. If the model can't be fetched, Pigment falls back to the offline method and tells you.
+Uses WebGPU when available, WASM otherwise. If the model can't be fetched, Paperhand falls back to the offline method and tells you.
 
 ## Project notes
 

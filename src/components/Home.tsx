@@ -26,7 +26,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
   const toast = useToast();
 
   const refresh = () => listDesigns().then(setDesigns);
-  useEffect(() => { refresh(); document.title = 'Pigment — design anything, privately'; }, []);
+  useEffect(() => { refresh(); document.title = 'Paperhand — design by hand, in your browser'; }, []);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -49,23 +49,23 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
   return (
     <div className="home">
       <header className="home-top">
-        <a href="#/" className="home-brand" aria-label="Pigment home"><Logo /></a>
+        <a href="#/" className="home-brand" aria-label="Paperhand home"><Logo /></a>
         <nav className="home-nav" aria-label="Main">
           <a href="#/" aria-current={!showAll ? 'page' : undefined}>Home</a>
           <a href="#/templates" aria-current={showAll ? 'page' : undefined}>Templates</a>
         </nav>
-        <Btn variant="primary" onClick={() => setCustom(true)}><Plus size={16} /> Create a design</Btn>
+        <Btn variant="primary" onClick={() => setCustom(true)}><Plus size={16} /> New design</Btn>
       </header>
 
       <main className="home-main">
         {!showAll && (
           <section className="hero" aria-labelledby="hero-h">
-            <h1 id="hero-h">What will you make today?</h1>
-            <p className="hero-sub">Free, private and offline-friendly. Your designs never leave this browser.</p>
+            <h1 id="hero-h">Make something by hand.</h1>
+            <p className="hero-sub">Templates, photos and type. No account, no AI filler, nothing locked.</p>
             <div className="hero-search"><Search value={q} onChange={(v) => { setQ(v); }} placeholder="Search templates — try “poster”, “sale” or “resume”" /></div>
             <ul className="hero-points">
               <li><LayoutTemplate size={16} /> {TEMPLATES.length} templates</li>
-              <li><Sparkles size={16} /> 100+ elements</li>
+              <li><Sparkles size={16} /> 100+ hand-drawn elements</li>
               <li><Wand2 size={16} /> On-device background removal</li>
               <li><Type size={16} /> 18 fonts</li>
               <li><ImageIcon size={16} /> PNG · JPG · PDF · SVG</li>
@@ -100,7 +100,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
               <div className="grid-designs">{[0, 1, 2].map((i) => <div key={i} className="dcard"><span className="dcard-thumb"><span className="skeleton" /></span></div>)}</div>
             ) : designs.length === 0 ? (
               <div className="empty">
-                <p><strong>Nothing here yet.</strong> Pick a template or a size above and your work will show up here, saved automatically in this browser.</p>
+                <p><strong>Your designs will live here.</strong> Start one from a size or a template; it saves itself as you go.</p>
               </div>
             ) : (
               <div className="grid-designs">
@@ -118,7 +118,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
           {showAll && <div className="tpl-search"><Search value={q} onChange={setQ} placeholder="Search templates" /></div>}
           {(showAll || q) && <Chips items={TEMPLATE_CATEGORIES} value={cat} onChange={(c) => setCat(c)} />}
           {filtered.length === 0 ? (
-            <div className="empty"><p>No templates match <strong>“{q}”</strong>{cat !== 'All' ? ` in ${cat}` : ''}. Try a broader word, or <button className="link" onClick={() => { setQ(''); setCat('All'); }}>clear the filters</button>.</p></div>
+            <div className="empty"><p>Nothing for <strong>“{q}”</strong>{cat !== 'All' ? ` in ${cat}` : ''}. Try a shorter word, or <button className="link" onClick={() => { setQ(''); setCat('All'); }}>clear the filters</button>.</p></div>
           ) : (
             <div className="grid-templates" aria-busy={busy}>
               {(showAll || q ? filtered : filtered.slice(0, 12)).map((t) => <TemplateCard key={t.id} t={t} onPick={pick} />)}
@@ -128,7 +128,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
       </main>
 
       <footer className="home-foot">
-        <span>Pigment runs entirely in your browser. No account, no tracking, no uploads to any server.</span>
+        <span>Paperhand runs entirely in your browser. No account, no tracking, no generative AI, and nothing ever leaves this device.</span>
       </footer>
 
       {custom && <CustomSize onClose={() => setCustom(false)} onCreate={(w, h) => blank(w, h)} />}
@@ -171,7 +171,7 @@ function timeAgo(t: number) {
 
 const UNITS = { px: 1, in: 96, mm: 96 / 25.4, cm: 96 / 2.54 } as const;
 
-export function CustomSize({ onClose, onCreate, initial, title = 'Custom size', cta = 'Create new design', extra }: { onClose: () => void; onCreate: (w: number, h: number) => void; initial?: [number, number]; title?: string; cta?: string; extra?: React.ReactNode }) {
+export function CustomSize({ onClose, onCreate, initial, title = 'Custom size', cta = 'Start designing', extra }: { onClose: () => void; onCreate: (w: number, h: number) => void; initial?: [number, number]; title?: string; cta?: string; extra?: React.ReactNode }) {
   const [unit, setUnit] = useState<keyof typeof UNITS>('px');
   const [w, setW] = useState(String(initial?.[0] ?? 1080));
   const [h, setH] = useState(String(initial?.[1] ?? 1080));

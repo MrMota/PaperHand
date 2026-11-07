@@ -60,7 +60,7 @@ test('F01-E5 keyboard only: tab to a template and open it', async ({ page }) => 
 
 test('F01-E6 accessibility: home, templates, editor', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('heading', { name: 'What will you make today?' }).waitFor();
+  await page.getByRole('heading', { name: 'Make something by hand.' }).waitFor();
   await axe(page, 'home');
   await page.goto('/#/templates');
   await axe(page, 'templates');

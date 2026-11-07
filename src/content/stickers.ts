@@ -1,4 +1,4 @@
-// Original illustrations drawn for Pigment. Each is a self-contained SVG on a 120×120 box.
+// Original illustrations drawn for Paperhand. Each is a self-contained SVG on a 120×120 box.
 export interface Sticker { id: string; name: string; tags: string; svg: string }
 
 const s = (body: string, vb = '0 0 120 120') => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>`;

@@ -8,11 +8,11 @@ test('F02-H1 preset creates a blank page at that size', async ({ page }) => {
 
 test('F02-H2 custom size in px', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Create a design' }).click();
+  await page.getByRole('button', { name: 'New design' }).click();
   const d = page.getByRole('dialog', { name: 'Custom size' });
   await d.getByLabel('Width').fill('800');
   await d.getByLabel('Height').fill('600');
-  await d.getByRole('button', { name: 'Create new design' }).click();
+  await d.getByRole('button', { name: 'Start designing' }).click();
   await waitEditor(page);
   await expect(page.getByText('800 × 600 px')).toBeVisible();
 });
@@ -29,21 +29,21 @@ test('F02-E1 inches convert to px', async ({ page }) => {
 
 test('F02-N1 out-of-range sizes are rejected', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Create a design' }).click();
+  await page.getByRole('button', { name: 'New design' }).click();
   const d = page.getByRole('dialog');
   await d.getByLabel('Width').fill('0');
   await expect(d.getByRole('alert')).toContainText('at least 40');
-  await expect(d.getByRole('button', { name: 'Create new design' })).toBeDisabled();
+  await expect(d.getByRole('button', { name: 'Start designing' })).toBeDisabled();
   await d.getByLabel('Width').fill('9000');
   await expect(d.getByRole('alert')).toContainText('under 8000');
 });
 
 test('F02-E2 empty input is rejected', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Create a design' }).click();
+  await page.getByRole('button', { name: 'New design' }).click();
   const d = page.getByRole('dialog');
   await d.getByLabel('Height').fill('');
-  await expect(d.getByRole('button', { name: 'Create new design' })).toBeDisabled();
+  await expect(d.getByRole('button', { name: 'Start designing' })).toBeDisabled();
   await page.keyboard.press('Escape');
   await expect(d).toBeHidden();
 });

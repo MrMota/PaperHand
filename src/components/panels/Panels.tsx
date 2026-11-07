@@ -435,7 +435,7 @@ export function PhotoPanel({ ed }: { ed: Editor }) {
     ed.canvas.requestRenderAll();
     ed.commit('bg-remove');
     setBusy(null);
-    if (res.usedFallback) toast('The AI model could not load (offline?). Used colour-based removal instead.', 'error');
+    if (res.usedFallback) toast('The cut-out model couldn’t load (offline?). Used colour-based removal instead.', 'error');
     else toast(`Background removed in ${((performance.now() - t0) / 1000).toFixed(1)} s`, 'success');
   };
   const restore = async () => {

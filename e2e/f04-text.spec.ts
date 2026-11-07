@@ -16,6 +16,7 @@ test('F04-H1 text formatting controls', async ({ page }) => {
 
 test('F04-H2/E1 type accents and emoji, persists after reload', async ({ page }) => {
   await page.keyboard.press('t');
+  await expect.poll(() => count(page)).toBe(1);
   await ed(page, () => { const a = (window as any).__pg.active; a.enterEditing(); a.selectAll(); });
   await page.keyboard.type('Café 🎨 Ünïcode');
   await page.keyboard.press('Escape');
@@ -34,6 +35,7 @@ test('F04-E2 very long pasted text wraps without crashing', async ({ page }) => 
 
 test('F04-E3 text effects apply', async ({ page }) => {
   await page.keyboard.press('t');
+  await expect.poll(() => count(page)).toBe(1);
   await page.getByRole('button', { name: 'Effects' }).click();
   await page.getByRole('button', { name: /Outline/ }).click();
   expect(await ed(page, () => (window as any).__pg.active.strokeWidth)).toBeGreaterThan(0);
@@ -43,6 +45,7 @@ test('F04-E3 text effects apply', async ({ page }) => {
 
 test('F04-E4 backspace while editing text does not delete the element', async ({ page }) => {
   await page.keyboard.press('t');
+  await expect.poll(() => count(page)).toBe(1); // text is added after its font loads
   await ed(page, () => (window as any).__pg.active.enterEditing());
   await page.keyboard.press('Backspace');
   await page.keyboard.press('Backspace');

@@ -12,7 +12,7 @@ import { TemplatesPanel, ElementsPanel, TextPanel, UploadsPanel, PhotosPanel, Dr
 import { DownloadDialog, ResizeDialog, ShortcutsDialog } from './Dialogs';
 
 const TAB_ID = Math.random().toString(36).slice(2);
-const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('pigment-designs') : null;
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('paperhand-designs') : null;
 
 async function persist(d: Design) {
   const thumb = await thumbnailOf(d.pages[0], d.width, d.height, 360);
@@ -63,7 +63,7 @@ export function EditorView({ id }: { id: string }) {
       await editor.init();
       if (disposed) { editor.dispose(); return; }
       setTitle(d.title);
-      document.title = `${d.title} — Pigment`;
+      document.title = `${d.title} — Paperhand`;
       setEd(editor);
       (window as any).__pg = editor; // test hook: lets e2e specs inspect canvas state
       requestAnimationFrame(() => { const s = stageRef.current; if (s && editor) editor.fit(s.clientWidth, s.clientHeight); });
@@ -92,7 +92,7 @@ export function EditorView({ id }: { id: string }) {
     } catch (err) {
       console.error(err);
       setSaveState('error');
-      toast(err instanceof StorageFullError ? 'Browser storage is full. Delete old designs or uploads to keep saving.' : 'Could not save this design', 'error');
+      toast(err instanceof StorageFullError ? 'This browser is out of room. Delete an old design or upload to keep saving.' : 'Couldn’t save just now. Your work is still open: try again, or download a copy.', 'error');
     }
   }, [toast]);
 
@@ -120,7 +120,7 @@ export function EditorView({ id }: { id: string }) {
       if (!fresh || ed.disposed) return;
       await ed.replaceDesign(fresh);
       setTitle(fresh.title);
-      toast('Updated with changes from another tab');
+      toast('Picked up changes from your other tab');
     };
     channel.addEventListener('message', on);
     return () => channel.removeEventListener('message', on);
@@ -253,8 +253,8 @@ export function EditorView({ id }: { id: string }) {
     return (
       <div className="center-msg">
         <Logo />
-        <h1>Design not found</h1>
-        <p>It may have been deleted, or it was made in a different browser. Designs are stored only on the device where they were created.</p>
+        <h1>We can’t find that design</h1>
+        <p>It may have been deleted, or it was made in another browser. Designs live only on the device that made them.</p>
         <Btn variant="primary" onClick={() => (location.hash = '/')}>Back to home</Btn>
       </div>
     );
@@ -282,7 +282,7 @@ export function EditorView({ id }: { id: string }) {
     }
   })();
 
-  const commitTitle = (v: string) => { if (!ed) return; const t = v.trim() || 'Untitled design'; setTitle(t); document.title = `${t} — Pigment`; doSave(ed, t); };
+  const commitTitle = (v: string) => { if (!ed) return; const t = v.trim() || 'Untitled design'; setTitle(t); document.title = `${t} — Paperhand`; doSave(ed, t); };
 
   return (
     <div className="editor">

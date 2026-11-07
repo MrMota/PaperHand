@@ -1,4 +1,4 @@
-// Procedurally generated imagery — Pigment ships no stock photos.
+// Procedurally generated imagery — Paperhand ships no stock photos.
 export interface GenImage { id: string; name: string; tags: string }
 
 export const GEN_IMAGES: GenImage[] = [
@@ -90,7 +90,7 @@ export function genImage(id: string, w = 1200, h = 900): string {
   const r = rng(id.length * 31 + 3);
   switch (id) {
     case 'mesh-sunset': mesh(ctx, w, h, '#F6B48F', ['#F96E46', '#FFD166', '#C8553D', '#FFB4A2'], 11); break;
-    case 'mesh-ocean': mesh(ctx, w, h, '#1D4E89', ['#00B4D8', '#90E0EF', '#03045E', '#48CAE4'], 21); break;
+    case 'mesh-ocean': mesh(ctx, w, h, '#1D4E89', ['#0096C7', '#90E0EF', '#03045E', '#48CAE4'], 21); break;
     case 'mesh-candy': mesh(ctx, w, h, '#FBC2EB', ['#A18CD1', '#FAD0C4', '#FF9A9E', '#FFFFFF'], 31); break;
     case 'mesh-forest': mesh(ctx, w, h, '#2D6A4F', ['#95D5B2', '#1B4332', '#D8F3DC', '#52B788'], 41); break;
     case 'mesh-night': mesh(ctx, w, h, '#14112B', ['#5B3FA6', '#E4577A', '#1D4E89', '#2B1B3F'], 51); break;

@@ -30,7 +30,7 @@ test('F11-E1 rename, duplicate and delete from home', async ({ page }) => {
 
 test('F11-N1 unknown design id', async ({ page }) => {
   await page.goto('/#/design/doesnotexist');
-  await expect(page.getByRole('heading', { name: 'Design not found' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'We can’t find that design' })).toBeVisible();
 });
 
 test('F11-E3 edit then leave immediately: edit is kept, no errors', async ({ page }) => {

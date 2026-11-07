@@ -99,11 +99,13 @@ export function Search({ value, onChange, placeholder }: { value: string; onChan
   );
 }
 
+const MARK = '<rect width="64" height="64" rx="15" fill="#1E1B16"/><path d="M17 13 H39 L49 23 V51 H17 Z" fill="#F6EDE3" transform="rotate(-6 33 32)"/><path d="M39 13 V23 H49" fill="#D9C6AE" transform="rotate(-6 33 32)"/><path d="M21 40 C27 33 34 41 44 33" stroke="#B7410E" stroke-width="6" fill="none" stroke-linecap="round"/>';
+
 export function Logo({ size = 28 }: { size?: number }) {
   return (
     <span className="logo">
-      <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden><rect width="64" height="64" rx="16" fill="var(--rail)" /><circle cx="26" cy="28" r="14" fill="#B7410E" /><circle cx="40" cy="36" r="14" fill="#E9B44C" fillOpacity=".9" /><circle cx="30" cy="42" r="10" fill="#2E8B8B" fillOpacity=".85" /></svg>
-      <span className="logo-word">Pigment</span>
+      <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden dangerouslySetInnerHTML={{ __html: MARK }} />
+      <span className="logo-word">Paperhand</span>
     </span>
   );
 }
