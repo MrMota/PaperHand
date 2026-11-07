@@ -38,9 +38,10 @@ export function DownloadDialog({ ed, onClose }: { ed: Editor; onClose: () => voi
             <option value="jpg">JPG — smallest file for photos</option>
             <option value="pdf">PDF — for printing and sharing</option>
             <option value="svg">SVG — scalable vector</option>
+            <option value="paperhand">Paperhand file — to keep or move this design</option>
           </select>
         </label>
-        {format !== 'svg' && (
+        {format !== 'svg' && format !== 'paperhand' && (
           <label className="field"><span>Size ×{mult} <span className="hint">({px})</span></span>
             <input type="range" min={0.5} max={4} step={0.5} value={mult} onChange={(e) => setMult(+e.target.value)} />
           </label>
@@ -51,7 +52,7 @@ export function DownloadDialog({ ed, onClose }: { ed: Editor; onClose: () => voi
         {(format === 'png' || format === 'svg') && (
           <label className="check"><input type="checkbox" checked={transparent} onChange={(e) => setTransparent(e.target.checked)} /> Transparent background</label>
         )}
-        {n > 1 && (
+        {n > 1 && format !== 'paperhand' && (
           <label className="field"><span>Pages</span>
             <select value={which} onChange={(e) => setWhich(e.target.value as any)}>
               <option value="all">All pages ({n}){format !== 'pdf' ? ' — one file each' : ''}</option>

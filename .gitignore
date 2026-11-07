@@ -6,3 +6,5 @@ replica/screens/*.png
 e2e-results.json
 test-results
 playwright-report
+.env.local
+.env.*.local

@@ -16,3 +16,23 @@ test('L-2 landing page has no fake proof and no competitor name', async ({ page 
   const text = (await page.locator('body').innerText()).toLowerCase();
   for (const bad of [/\bcanva\b/, /trusted by/, /testimonial/, /users love/, /★/, /\brated\b/, /\d[\d,]* (users|designers|customers)/]) expect(text).not.toMatch(bad);
 });
+
+test('L-3 privacy and terms pages are reachable from the footer and pass the scan', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('navigation', { name: 'Legal' }).getByRole('link', { name: 'Privacy' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Privacy' })).toBeVisible();
+  for (const who of ['Our web host', 'Hugging Face', 'Stripe', 'GitHub']) await expect(page.getByText(who, { exact: true })).toBeVisible();
+  await axe(page, 'privacy');
+  await page.getByRole('navigation', { name: 'Legal' }).getByRole('link', { name: 'Terms' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Terms' })).toBeVisible();
+  await axe(page, 'terms');
+});
+
+test('L-4 social preview tags point at our own image', async ({ page }) => {
+  await page.goto('/');
+  const og = await page.locator('meta[property="og:image"]').getAttribute('content');
+  expect(og).toMatch(/\/og\.png$/);
+  expect(og).not.toContain('%VITE_SITE_URL%');
+  const res = await page.request.get('/og.png');
+  expect(res.status()).toBe(200);
+});

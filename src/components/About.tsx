@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Check, Hand, Lock, ShieldCheck, Wand2, LayoutTemplate, Download, MousePointerClick, Type } from 'lucide-react';
 import { Logo } from './ui';
 import { TEMPLATES } from '../content/templates';
+import { LegalFooter } from './Legal';
 
 const FAQ: [string, string][] = [
   ['Is it really free?', 'Yes. Every template, element, font and export is free, with no watermark and no trial. If Paperhand is useful to you, you can chip in once as a supporter. Supporters get a thank-you, not extra features.'],
@@ -107,7 +108,7 @@ export function About() {
         </section>
       </main>
 
-      <footer className="home-foot"><span>Paperhand runs entirely in your browser. No account, no tracking, no generative AI.</span></footer>
+      <LegalFooter />
     </div>
   );
 }

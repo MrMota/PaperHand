@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import type { Design } from '../types';
 import { renderJSON } from './render';
 
-export type ExportFormat = 'png' | 'jpg' | 'pdf' | 'svg';
+export type ExportFormat = 'png' | 'jpg' | 'pdf' | 'svg' | 'paperhand';
 export interface ExportOptions { format: ExportFormat; multiplier: number; transparent: boolean; pages: number[]; quality: number }
 
 function download(url: string, name: string) {
@@ -14,6 +14,7 @@ function download(url: string, name: string) {
 const safe = (s: string) => s.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'design';
 
 export async function exportDesign(d: Design, o: ExportOptions, onProgress?: (done: number, total: number) => void) {
+  if (o.format === 'paperhand') { const { downloadDesignFile } = await import('../store/backup'); downloadDesignFile(d); return; }
   const name = safe(d.title);
   const pages = o.pages.length ? o.pages : d.pages.map((_, i) => i);
   const multi = pages.length > 1;

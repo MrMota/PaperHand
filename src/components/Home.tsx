@@ -1,5 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Copy, LayoutTemplate, MoreHorizontal, Pencil, Plus, Ruler, Trash2, Sparkles, Image as ImageIcon, Type, Wand2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Copy, LayoutTemplate, MoreHorizontal, Pencil, Plus, Ruler, Trash2, Sparkles, Image as ImageIcon, Type, Wand2, FileDown, FolderOpen, Archive } from 'lucide-react';
+import { backupEverything, deleteEverything, downloadDesignFile, importFile } from '../store/backup';
+import { loadDesign } from '../store/db';
+import { LegalFooter } from './Legal';
 import { Btn, Chips, Logo, Modal, Search, useToast } from './ui';
 import { TemplateCard } from './TemplateCard';
 import { FORMATS, TEMPLATES, TEMPLATE_CATEGORIES, type Template } from '../content/templates';
@@ -96,7 +99,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
 
         {!showAll && !q && (
           <section aria-labelledby="recent-h" className="section">
-            <div className="section-head"><h2 id="recent-h">Recent designs</h2></div>
+            <div className="section-head"><h2 id="recent-h">Recent designs</h2><DataActions count={designs?.length ?? 0} onChange={refresh} /></div>
             {designs === null ? (
               <div className="grid-designs">{[0, 1, 2].map((i) => <div key={i} className="dcard"><span className="dcard-thumb"><span className="skeleton" /></span></div>)}</div>
             ) : designs.length === 0 ? (
@@ -128,9 +131,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
         </section>
       </main>
 
-      <footer className="home-foot">
-        <span>Paperhand runs entirely in your browser. No account, no tracking, no generative AI, and nothing ever leaves this device.</span>
-      </footer>
+      <LegalFooter />
 
       {custom && <CustomSize onClose={() => setCustom(false)} onCreate={(w, h) => blank(w, h)} />}
     </div>
@@ -154,10 +155,36 @@ function DesignCard({ d, onChange }: { d: DesignMeta; onChange: () => void }) {
           <div className="menu" role="menu" onMouseLeave={() => setMenu(false)}>
             <button role="menuitem" onClick={async () => { const t = prompt('Rename design', d.title); if (t) { await renameDesign(d.id, t); onChange(); } setMenu(false); }}><Pencil size={14} /> Rename</button>
             <button role="menuitem" onClick={async () => { await duplicateDesign(d.id); onChange(); setMenu(false); toast('Design duplicated', 'success'); }}><Copy size={14} /> Make a copy</button>
+            <button role="menuitem" onClick={async () => { const full = await loadDesign(d.id); if (full) downloadDesignFile(full); setMenu(false); }}><FileDown size={14} /> Download design file</button>
             <button role="menuitem" className="danger" onClick={async () => { if (confirm(`Delete “${d.title}”? This cannot be undone.`)) { await deleteDesign(d.id); onChange(); } setMenu(false); }}><Trash2 size={14} /> Delete</button>
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function DataActions({ count, onChange }: { count: number; onChange: () => void }) {
+  const input = useRef<HTMLInputElement>(null);
+  const toast = useToast();
+  const open = async (files: FileList | null) => {
+    for (const f of [...(files ?? [])]) {
+      try {
+        const r = await importFile(f);
+        onChange();
+        toast(r.designs === 1 && !r.uploads ? `Opened “${f.name}”` : `Added ${r.designs} design${r.designs === 1 ? '' : 's'}${r.uploads ? ` and ${r.uploads} upload${r.uploads === 1 ? '' : 's'}` : ''}`, 'success');
+      } catch (e: any) { toast(e.message ?? 'Couldn’t open that file', 'error'); }
+    }
+  };
+  return (
+    <div className="data-actions">
+      <button className="link" onClick={() => input.current?.click()}><FolderOpen size={14} /> Open a design file</button>
+      <input ref={input} type="file" accept=".paperhand,application/json" multiple hidden onChange={(e) => { open(e.target.files); e.target.value = ''; }} aria-label="Open a design file" />
+      {count > 0 && <button className="link" onClick={async () => { const r = await backupEverything(); toast(`Backed up ${r.designs} design${r.designs === 1 ? '' : 's'} and ${r.uploads} upload${r.uploads === 1 ? '' : 's'}`, 'success'); }}><Archive size={14} /> Back up everything</button>}
+      {count > 0 && <button className="link link-danger" onClick={async () => {
+        if (!confirm('Delete every design and upload in this browser? This can’t be undone. Back up first if you want to keep anything.')) return;
+        await deleteEverything(); onChange(); toast('Everything in this browser was deleted');
+      }}><Trash2 size={14} /> Delete everything</button>}
     </div>
   );
 }
