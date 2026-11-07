@@ -1,0 +1,76 @@
+# Builds the Android APK from source and publishes it as a GitHub Release.
+# Trigger: push a version tag, e.g.  git tag v1.0.1 && git push origin v1.0.1
+name: Android release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write   # create the release and upload the APK
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc -b
+
+      - name: Build web app and APK
+        run: npm run android:debug   # vite build → cap sync android → gradlew assembleDebug (ANDROID_HOME is preinstalled on the runner)
+
+      - name: Name the APK after the version
+        id: apk
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          [ "${GITHUB_REF_TYPE}" = "tag" ] || VERSION="dev-${GITHUB_SHA::7}"
+          OUT="paperhand-${VERSION}-debug.apk"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "$OUT"
+          sha256sum "$OUT" > "$OUT.sha256"
+          echo "file=$OUT" >> "$GITHUB_OUTPUT"
+          echo "sha=$(cut -d' ' -f1 "$OUT.sha256")" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the APK as a build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.file }}
+          path: |
+            ${{ steps.apk.outputs.file }}
+            ${{ steps.apk.outputs.file }}.sha256
+
+      - name: Publish the release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Paperhand ${{ github.ref_name }}
+          files: |
+            ${{ steps.apk.outputs.file }}
+            ${{ steps.apk.outputs.file }}.sha256
+          body: |
+            Paperhand for Android: a design studio for making things by hand. No account, no generative AI, works offline.
+
+            **Install:** download `${{ steps.apk.outputs.file }}` on your Android phone (Android 7.0+), open it, and allow installs from that source when asked. Play Protect may say it doesn't recognise the app: tap *Install anyway*.
+
+            **This is a debug build** for testing and sideloading, not a Google Play release. Downloads in the app open Android's share sheet (Save to Files, Drive, Photos).
+
+            SHA-256: `${{ steps.apk.outputs.sha }}`
+
+            Built from ${{ github.sha }} by the *Android release* workflow.

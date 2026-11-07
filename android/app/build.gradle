@@ -25,6 +25,14 @@ android {
         }
     }
     signingConfigs {
+        // Shared debug key (not a secret: standard password "android"), so debug APKs built anywhere,
+        // including GitHub Actions, have the same signature and install over each other.
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         if (keystorePropertiesFile.exists()) {
             release {
                 storeFile file(keystoreProperties['storeFile'])
@@ -35,6 +43,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.release
