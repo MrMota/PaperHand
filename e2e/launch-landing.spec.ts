@@ -1,0 +1,18 @@
+import { test, expect, axe, waitEditor } from './fixtures';
+
+test('L-1 landing page passes accessibility scan and its CTA starts a design', async ({ page }) => {
+  await page.goto('/#/about');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('A design studio that leaves the making to you.');
+  await expect(page.getByRole('img', { name: /Paperhand editor/ })).toBeVisible();
+  await axe(page, 'landing');
+  await page.getByRole('main').getByRole('link', { name: 'Start a design' }).first().click();
+  await expect(page.getByRole('heading', { name: 'Make something by hand.' })).toBeVisible();
+  await page.getByRole('button', { name: /^Square post/ }).click();
+  await waitEditor(page);
+});
+
+test('L-2 landing page has no fake proof and no competitor name', async ({ page }) => {
+  await page.goto('/#/about');
+  const text = (await page.locator('body').innerText()).toLowerCase();
+  for (const bad of [/\bcanva\b/, /trusted by/, /testimonial/, /users love/, /★/, /\brated\b/, /\d[\d,]* (users|designers|customers)/]) expect(text).not.toMatch(bad);
+});

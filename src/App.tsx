@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Home } from './components/Home';
 import { EditorView } from './components/EditorView';
+import { About } from './components/About';
 
 function parse() {
   const h = location.hash.replace(/^#\/?/, '');
   const [a, b] = h.split('/');
   if (a === 'design' && b) return { name: 'design' as const, id: b };
+  if (a === 'about') return { name: 'about' as const };
   if (a === 'templates') return { name: 'templates' as const, cat: b ? decodeURIComponent(b) : undefined };
   return { name: 'home' as const };
 }
@@ -20,5 +22,6 @@ export function App() {
     return () => window.removeEventListener('hashchange', on);
   }, []);
   if (route.name === 'design') return <EditorView key={route.id} id={route.id} />;
+  if (route.name === 'about') return <About />;
   return <Home view={route.name} initialCat={route.name === 'templates' ? route.cat : undefined} />;
 }

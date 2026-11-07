@@ -1,0 +1,18 @@
+{
+  "app_store": {
+    "name": "Paperhand",
+    "subtitle": "Design by hand. No account.",
+    "promotional_text": "Posters, posts, slides and invitations from your own photos and type. Nothing locked, no generative AI, and your designs stay on your device.",
+    "keywords": "poster,flyer,invitation,thumbnail,resume,logo,collage,slides,photo,background,remover,template",
+    "description": "Paperhand is a design studio that leaves the making to you.\n\nNO GENERATIVE AI\nEvery template and illustration in Paperhand is made by hand. It never fills your page with machine-made content.\n\nNOTHING LOCKED\nNo crowns, no watermarks, no trials, no renewals. Every template, element, font and export is yours to use.\n\nNO ACCOUNT\nOpen it and start. Your designs and photos stay on your device.\n\nBACKGROUND REMOVAL ON YOUR DEVICE\nCut a subject out of your photo with one tap. It runs on your device, only when you ask, and your photo is never uploaded.\n\nWHAT YOU CAN MAKE\nSocial posts and stories, presentations, posters, flyers, video thumbnails, banners, business cards, logos, invitations, resumes and certificates: 61 templates to start from, or a blank page at any size.\n\nTOOLS\n- 100+ elements: shapes, lines and arrows, illustrations, photo frames, gradients and textures\n- 18 open-licensed fonts, text effects, letter spacing and line height\n- Photo filters, adjustments, crop and frames\n- Multi-page designs, layers, alignment, snapping, undo\n- Freehand drawing\n- Download PNG, JPG, multi-page PDF or SVG, with transparent backgrounds\n\nPaperhand keeps your work in this app's storage on your device. Remove the app and your designs go with it, so download anything you want to keep."
+  },
+  "google_play": {
+    "title": "Paperhand: Poster & Post Maker",
+    "short_description": "Posters, posts and slides made by hand. No account, nothing locked, no AI filler",
+    "full_description": "Paperhand is a design studio that leaves the making to you.\n\nNo generative AI: every template and illustration is made by hand, and Paperhand never fills your page with machine-made content.\n\nNothing locked: no crowns, no watermarks, no trials, no renewals.\n\nNo account: open it and start. Your designs and photos stay on your device.\n\nBackground removal on your device: cut a subject out of your photo with one tap. Your photo is never uploaded.\n\nMake social posts and stories, presentations, posters, flyers, thumbnails, banners, business cards, logos, invitations, resumes and certificates from 61 templates or a blank page.\n\nTools: 100+ elements, 18 open-licensed fonts, text effects, photo filters and crop, frames, multi-page designs, layers, snapping, drawing, and downloads as PNG, JPG, PDF or SVG."
+  },
+  "support_url": "https://github.com/MrMota/pigment/issues",
+  "privacy_policy_url": "TO DO: host privacy.html at your domain",
+  "age_rating_notes": "No user-generated content sharing, no chat, no purchases inside the app, no ads.",
+  "review_notes": "No account needed. Open the app, tap a template, tap any text to edit it, then Download."
+}

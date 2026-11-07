@@ -53,6 +53,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
         <nav className="home-nav" aria-label="Main">
           <a href="#/" aria-current={!showAll ? 'page' : undefined}>Home</a>
           <a href="#/templates" aria-current={showAll ? 'page' : undefined}>Templates</a>
+          <a href="#/about">About</a>
         </nav>
         <Btn variant="primary" onClick={() => setCustom(true)}><Plus size={16} /> New design</Btn>
       </header>
