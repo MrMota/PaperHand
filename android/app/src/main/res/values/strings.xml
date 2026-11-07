@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Paperhand</string>
+    <string name="title_activity_main">Paperhand</string>
+    <string name="package_name">com.mrmota.paperhand</string>
+    <string name="custom_url_scheme">com.mrmota.paperhand</string>
+</resources>

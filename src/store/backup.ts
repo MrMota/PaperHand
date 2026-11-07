@@ -3,22 +3,19 @@ import type { Design } from '../types';
 import { uid } from '../types';
 import { listDesigns, loadDesign, saveDesign, listUploads, getUpload, addUpload } from './db';
 import { thumbnailOf } from '../editor/render';
+import { saveBlob } from '../platform/save';
 
 const DESIGN_FORMAT = 'paperhand-design';
 const BACKUP_FORMAT = 'paperhand-backup';
 
 function download(text: string, name: string) {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-  const a = document.createElement('a');
-  a.href = url; a.download = name;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  return saveBlob(new Blob([text], { type: 'application/json' }), name);
 }
 const safe = (s: string) => s.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'design';
 const stamp = () => new Date().toISOString().slice(0, 10);
 
 export function downloadDesignFile(d: Design) {
-  download(JSON.stringify({ format: DESIGN_FORMAT, version: 1, exportedAt: new Date().toISOString(), design: d }), `${safe(d.title)}.paperhand`);
+  return download(JSON.stringify({ format: DESIGN_FORMAT, version: 1, exportedAt: new Date().toISOString(), design: d }), `${safe(d.title)}.paperhand`);
 }
 
 export async function backupEverything() {
@@ -26,7 +23,7 @@ export async function backupEverything() {
   for (const m of await listDesigns()) { const d = await loadDesign(m.id); if (d) designs.push(d); }
   const uploads = [];
   for (const u of await listUploads()) { const data = await getUpload(u.id); if (data) uploads.push({ ...u, data }); }
-  download(JSON.stringify({ format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), designs, uploads }), `paperhand-backup-${stamp()}.paperhand`);
+  await download(JSON.stringify({ format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), designs, uploads }), `paperhand-backup-${stamp()}.paperhand`);
   return { designs: designs.length, uploads: uploads.length };
 }
 

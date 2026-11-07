@@ -1,20 +1,15 @@
 import { jsPDF } from 'jspdf';
 import type { Design } from '../types';
 import { renderJSON } from './render';
+import { saveBlob, saveDataURL } from '../platform/save';
 
 export type ExportFormat = 'png' | 'jpg' | 'pdf' | 'svg' | 'paperhand';
 export interface ExportOptions { format: ExportFormat; multiplier: number; transparent: boolean; pages: number[]; quality: number }
 
-function download(url: string, name: string) {
-  const a = document.createElement('a');
-  a.href = url; a.download = name;
-  document.body.appendChild(a); a.click(); a.remove();
-}
-
 const safe = (s: string) => s.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'design';
 
 export async function exportDesign(d: Design, o: ExportOptions, onProgress?: (done: number, total: number) => void) {
-  if (o.format === 'paperhand') { const { downloadDesignFile } = await import('../store/backup'); downloadDesignFile(d); return; }
+  if (o.format === 'paperhand') { const { downloadDesignFile } = await import('../store/backup'); await downloadDesignFile(d); return; }
   const name = safe(d.title);
   const pages = o.pages.length ? o.pages : d.pages.map((_, i) => i);
   const multi = pages.length > 1;
@@ -27,7 +22,7 @@ export async function exportDesign(d: Design, o: ExportOptions, onProgress?: (do
       r.canvas.dispose();
       onProgress?.(k + 1, pages.length);
     }
-    pdf.save(`${name}.pdf`);
+    await saveBlob(pdf.output('blob'), `${name}.pdf`);
     return;
   }
   for (let k = 0; k < pages.length; k++) {
@@ -35,12 +30,9 @@ export async function exportDesign(d: Design, o: ExportOptions, onProgress?: (do
     const suffix = multi ? `-${i + 1}` : '';
     const r = await renderJSON(d.pages[i], d.width, d.height, { multiplier: o.multiplier, format: o.format === 'jpg' ? 'jpeg' : 'png', quality: o.quality, transparent: o.transparent && o.format !== 'jpg' });
     if (o.format === 'svg') {
-      const blob = new Blob([r.svg], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
-      download(url, `${name}${suffix}.svg`);
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      await saveBlob(new Blob([r.svg], { type: 'image/svg+xml' }), `${name}${suffix}.svg`);
     } else {
-      download(r.url, `${name}${suffix}.${o.format}`);
+      await saveDataURL(r.url, `${name}${suffix}.${o.format}`);
     }
     r.canvas.dispose();
     onProgress?.(k + 1, pages.length);

@@ -4,6 +4,7 @@ import { backupEverything, deleteEverything, downloadDesignFile, importFile } fr
 import { loadDesign } from '../store/db';
 import { LegalFooter } from './Legal';
 import { canInstall, promptInstall } from '../platform/pwa';
+import { isNative } from '../platform/native';
 import { Download as DownloadIcon } from 'lucide-react';
 import { Btn, Chips, Logo, Modal, Search, useToast } from './ui';
 import { TemplateCard } from './TemplateCard';
@@ -189,7 +190,7 @@ function DataActions({ count, onChange }: { count: number; onChange: () => void 
   return (
     <div className="data-actions">
       <button className="link" onClick={() => input.current?.click()}><FolderOpen size={14} /> Open a design file</button>
-      <input ref={input} type="file" accept=".paperhand,application/json" multiple hidden onChange={(e) => { open(e.target.files); e.target.value = ''; }} aria-label="Open a design file" />
+      <input ref={input} type="file" accept={isNative() ? undefined : '.paperhand,application/json'} multiple hidden onChange={(e) => { open(e.target.files); e.target.value = ''; }} aria-label="Open a design file" />
       {count > 0 && <button className="link" onClick={async () => { const r = await backupEverything(); toast(`Backed up ${r.designs} design${r.designs === 1 ? '' : 's'} and ${r.uploads} upload${r.uploads === 1 ? '' : 's'}`, 'success'); }}><Archive size={14} /> Back up everything</button>}
       {count > 0 && <button className="link link-danger" onClick={async () => {
         if (!confirm('Delete every design and upload in this browser? This can’t be undone. Back up first if you want to keep anything.')) return;

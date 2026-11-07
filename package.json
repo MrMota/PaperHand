@@ -7,9 +7,17 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "android:sync": "vite build && cap sync android",
+    "android:debug": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run android:sync && cd android && ./gradlew assembleRelease bundleRelease",
+    "android:open": "cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
     "@fontsource/abril-fatface": "^5.3.0",
     "@fontsource/anton": "^5.3.0",
     "@fontsource/archivo-black": "^5.3.0",
@@ -38,6 +46,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@capacitor/cli": "^8.6.0",
     "@playwright/test": "^1.63.0",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
