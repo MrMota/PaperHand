@@ -35,13 +35,14 @@ export class Editor {
   onChange?: (reason: string) => void;
   version = 0;
   snapping = true;
+  disposed = false;
 
   constructor(el: HTMLCanvasElement, design: Design) {
     this.design = design;
     this.pages = design.pages.map((p) => ({ ...p, pageId: p.pageId ?? uid() }));
     this.canvas = new Canvas(el, {
       width: design.width, height: design.height, preserveObjectStacking: true, selectionColor: 'rgba(29,95,209,0.08)', selectionBorderColor: '#1D5FD1', selectionLineWidth: 1,
-      controlsAboveOverlay: true, stopContextMenu: true, fireRightClick: true, targetFindTolerance: 6,
+      controlsAboveOverlay: true, stopContextMenu: false, fireRightClick: true, targetFindTolerance: 6,
     });
     const c = this.canvas;
     c.on('selection:created', () => this.emit());
@@ -59,13 +60,13 @@ export class Editor {
 
   // ---------- events ----------
   subscribe(fn: Listener) { this.listeners.add(fn); return () => this.listeners.delete(fn); }
-  emit() { this.version++; this.listeners.forEach((l) => l()); }
+  emit() { if (this.disposed) return; this.version++; this.listeners.forEach((l) => l()); }
 
   get page() { return this.pages[this.current]; }
   get width() { return this.design.width; }
   get height() { return this.design.height; }
 
-  dispose() { this.canvas.dispose(); this.listeners.clear(); }
+  dispose() { this.disposed = true; clearTimeout(this.commitTimer); this.listeners.clear(); this.canvas.dispose(); }
 
   // ---------- pages ----------
   async init() { await this.loadPage(0, true); }
@@ -87,12 +88,12 @@ export class Editor {
 
   /** Serialize the live canvas into the current page slot. */
   flush() {
-    if (this.loading) return;
+    if (this.loading || this.disposed) return;
     this.pages[this.current] = { ...serialize(this.canvas), pageId: this.page.pageId };
   }
 
   commit(reason = 'change') {
-    if (this.loading) return;
+    if (this.loading || this.disposed) return;
     this.flush();
     const id = this.page.pageId;
     const h = this.history.get(id) ?? { stack: [], idx: -1 };
@@ -171,6 +172,15 @@ export class Editor {
   isPageEmpty() { return this.canvas.getObjects().length === 0; }
 
   // ---------- design-level ----------
+  /** Replace the whole design with a newer saved copy (e.g. saved from another tab). */
+  async replaceDesign(d: Design) {
+    this.design = { ...d };
+    this.pages = d.pages.map((p) => ({ ...p, pageId: p.pageId ?? uid() }));
+    this.history.clear();
+    if (this.canvas.width !== Math.round(d.width * this.zoom)) this.setZoom(this.zoom);
+    await this.loadPage(Math.min(this.current, this.pages.length - 1), true);
+  }
+
   getDesign(): Design { this.flush(); return { ...this.design, pages: this.pages }; }
 
   async resize(w: number, h: number, scaleContent: boolean) {
@@ -608,6 +618,7 @@ export class Editor {
   private snap(target: FabricObject | undefined) {
     if (!target || !this.snapping) return;
     const th = 6 / this.zoom;
+    target.setCoords(); // coords are stale during a drag; measure where the object is now
     const r = target.getBoundingRect();
     const xs = [r.left, r.left + r.width / 2, r.left + r.width];
     const ys = [r.top, r.top + r.height / 2, r.top + r.height];

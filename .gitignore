@@ -3,3 +3,6 @@ dist
 *.log
 .DS_Store
 replica/screens/*.png
+e2e-results.json
+test-results
+playwright-report

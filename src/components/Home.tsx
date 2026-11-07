@@ -78,13 +78,13 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
             <div className="section-head"><h2 id="sizes-h">Start with a size</h2></div>
             <div className="sizes">
               <button className="size-card size-custom" onClick={() => setCustom(true)}>
-                <span className="size-icon"><Ruler size={22} /></span>
+                <span className="size-icon" aria-hidden><Ruler size={22} /></span>
                 <span className="size-name">Custom size</span>
                 <span className="size-dim">Any width × height</span>
               </button>
               {FORMATS.map((f) => (
                 <button key={f.id} className="size-card" onClick={() => blank(f.w, f.h, f.name)}>
-                  <span className="size-icon"><span className="size-shape" style={{ aspectRatio: `${f.w}/${f.h}` }}>{FORMAT_ICONS[f.id]}</span></span>
+                  <span className="size-icon" aria-hidden><span className="size-shape" style={{ aspectRatio: `${f.w}/${f.h}` }}>{FORMAT_ICONS[f.id]}</span></span>
                   <span className="size-name">{f.name}</span>
                   <span className="size-dim">{f.w} × {f.h} px</span>
                 </button>

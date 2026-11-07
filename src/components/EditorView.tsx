@@ -11,6 +11,15 @@ import { Toolbar, type ContextPanel } from './Toolbar';
 import { TemplatesPanel, ElementsPanel, TextPanel, UploadsPanel, PhotosPanel, DrawPanel, BackgroundPanel, LayersPanel, ColorPanel, PhotoPanel, CropPanel, EffectsPanel } from './panels/Panels';
 import { DownloadDialog, ResizeDialog, ShortcutsDialog } from './Dialogs';
 
+const TAB_ID = Math.random().toString(36).slice(2);
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('pigment-designs') : null;
+
+async function persist(d: Design) {
+  const thumb = await thumbnailOf(d.pages[0], d.width, d.height, 360);
+  await saveDesign(d, thumb);
+  channel?.postMessage({ id: d.id, from: TAB_ID });
+}
+
 const TABS = [
   { id: 'templates', label: 'Templates', icon: LayoutTemplate },
   { id: 'elements', label: 'Elements', icon: Shapes },
@@ -38,6 +47,9 @@ export function EditorView({ id }: { id: string }) {
   const [dropping, setDropping] = useState(false);
   const toast = useToast();
   useEditorVersion(ed);
+  const saveTimer = useRef<number>();
+  const thumbTimer = useRef<number>();
+  const pendingSave = useRef(false);
 
   // ---------- load ----------
   useEffect(() => {
@@ -53,20 +65,30 @@ export function EditorView({ id }: { id: string }) {
       setTitle(d.title);
       document.title = `${d.title} — Pigment`;
       setEd(editor);
+      (window as any).__pg = editor; // test hook: lets e2e specs inspect canvas state
       requestAnimationFrame(() => { const s = stageRef.current; if (s && editor) editor.fit(s.clientWidth, s.clientHeight); });
     })();
-    return () => { disposed = true; editor?.dispose(); };
+    return () => {
+      disposed = true;
+      clearTimeout(thumbTimer.current);
+      if (editor) {
+        // Snapshot BEFORE disposing the canvas, so an edit made inside the autosave debounce is not lost.
+        if (pendingSave.current) { clearTimeout(saveTimer.current); pendingSave.current = false; persist(editor.getDesign()).catch(console.error); }
+        editor.dispose();
+      }
+      if ((window as any).__pg === editor) (window as any).__pg = undefined;
+    };
   }, [id]);
 
   // ---------- autosave ----------
-  const saveTimer = useRef<number>();
   const doSave = useCallback(async (e: Editor, titleOverride?: string) => {
+    if (e.disposed) return;
+    pendingSave.current = false;
     const d: Design = { ...e.getDesign(), title: titleOverride ?? e.design.title };
     e.design.title = d.title;
     try {
-      const thumb = await thumbnailOf(d.pages[0], d.width, d.height, 360);
-      await saveDesign(d, thumb);
-      setSaveState('saved');
+      await persist(d);
+      if (!pendingSave.current) setSaveState('saved');
     } catch (err) {
       console.error(err);
       setSaveState('error');
@@ -78,24 +100,39 @@ export function EditorView({ id }: { id: string }) {
     if (!ed) return;
     ed.onChange = () => {
       setSaveState('saving');
+      pendingSave.current = true;
       clearTimeout(saveTimer.current);
       saveTimer.current = window.setTimeout(() => doSave(ed), 700);
     };
-    const beforeUnload = (e: BeforeUnloadEvent) => { if (saveState === 'saving') { e.preventDefault(); } };
+    const beforeUnload = (e: BeforeUnloadEvent) => { if (pendingSave.current) { e.preventDefault(); } };
     window.addEventListener('beforeunload', beforeUnload);
     return () => { window.removeEventListener('beforeunload', beforeUnload); };
-  }, [ed, doSave, saveState]);
+  }, [ed, doSave]);
 
-  // flush pending save on unmount
-  useEffect(() => () => { if (ed && saveTimer.current) { clearTimeout(saveTimer.current); doSave(ed); } }, [ed, doSave]);
+
+  // ---------- other tabs ----------
+  useEffect(() => {
+    if (!ed || !channel) return;
+    const on = async (e: MessageEvent) => {
+      if (e.data?.id !== id || e.data.from === TAB_ID || ed.disposed) return;
+      if (pendingSave.current) { toast('This design was also changed in another tab. Your version will replace it.', 'error'); return; }
+      const fresh = await loadDesign(id);
+      if (!fresh || ed.disposed) return;
+      await ed.replaceDesign(fresh);
+      setTitle(fresh.title);
+      toast('Updated with changes from another tab');
+    };
+    channel.addEventListener('message', on);
+    return () => channel.removeEventListener('message', on);
+  }, [ed, id, toast]);
 
   // ---------- page thumbnails ----------
   const pagesKey = ed ? ed.pages.map((p) => p.pageId).join(',') + ':' + ed.current : '';
-  const thumbTimer = useRef<number>();
   useEffect(() => {
     if (!ed) return;
     clearTimeout(thumbTimer.current);
     thumbTimer.current = window.setTimeout(async () => {
+      if (ed.disposed) return;
       ed.flush();
       const next: Record<string, string> = {};
       for (const p of ed.pages) {
@@ -286,7 +323,7 @@ export function EditorView({ id }: { id: string }) {
             className={`stage ${dropping ? 'is-drop' : ''}`}
             ref={stageRef}
             onMouseDown={(e) => { if (e.target === e.currentTarget) ed?.deselect(); setMenu(null); }}
-            onContextMenu={(e) => { e.preventDefault(); if (!ed) return; const r = stageRef.current!.getBoundingClientRect(); setMenu({ x: Math.min(e.clientX - r.left, r.width - 220), y: Math.min(e.clientY - r.top, r.height - 320) }); }}
+            onContextMenu={(e) => { e.preventDefault(); if (!ed) return; const hit = ed.canvas.findTarget(e.nativeEvent as any) as any; const t = hit?.target ?? hit; if (t && typeof t === 'object' && 'type' in t && !ed.selection.includes(t)) ed.select(t); const r = stageRef.current!.getBoundingClientRect(); setMenu({ x: Math.min(e.clientX - r.left, r.width - 220), y: Math.min(e.clientY - r.top, r.height - 320) }); }}
             onWheel={(e) => { if (!ed || !(e.ctrlKey || e.metaKey)) return; e.preventDefault(); (ed as any).__autoFit = false; ed.setZoom(ed.zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)); }}
             onDragOver={(e) => { if ([...e.dataTransfer.items].some((i) => i.kind === 'file')) { e.preventDefault(); setDropping(true); } }}
             onDragLeave={() => setDropping(false)}
@@ -320,12 +357,12 @@ export function EditorView({ id }: { id: string }) {
                     )}
                   </div>
                 ))}
-                <button className="pg-add" onClick={() => ed.addPage()} aria-label="Add page" style={{ aspectRatio: `${ed.width}/${ed.height}` }}><Plus size={18} /></button>
               </div>
+              <button className="pg-add" onClick={() => ed.addPage()} aria-label="Add page" style={{ aspectRatio: `${ed.width}/${ed.height}` }}><Plus size={18} /></button>
               <div className="zoom">
                 <IconBtn label={ed.snapping ? 'Snapping on' : 'Snapping off'} active={ed.snapping} onClick={() => { ed.snapping = !ed.snapping; ed.emit(); }} className="icon-btn-sm"><Magnet size={14} /></IconBtn>
                 <span className="hint hide-sm">Page {ed.current + 1} / {ed.pages.length}</span>
-                <input type="range" min={5} max={300} value={Math.round(ed.zoom * 100)} onChange={(e) => { (ed as any).__autoFit = false; ed.setZoom(+e.target.value / 100); }} aria-label="Zoom" className="hide-sm" />
+                <input type="range" min={5} max={300} value={Math.round(ed.zoom * 100)} onChange={(e) => { (ed as any).__autoFit = false; ed.setZoom(+e.target.value / 100); }} aria-label="Canvas zoom" className="hide-sm" />
                 <button className="zoom-val" onClick={fit} title="Fit to screen (Ctrl+0)">{Math.round(ed.zoom * 100)}%</button>
                 <IconBtn label="Fit to screen" onClick={fit} className="icon-btn-sm"><Maximize2 size={14} /></IconBtn>
               </div>

@@ -17,13 +17,13 @@ export function TemplateCard({ t, onPick, compact }: { t: Template; onPick: (t: 
     return () => { alive = false; io.disconnect(); };
   }, [t]);
   return (
-    <button ref={ref} className={`tcard ${compact ? 'tcard-compact' : ''}`} onClick={() => onPick(t)} title={t.title}>
+    <button ref={ref} className={`tcard ${compact ? 'tcard-compact' : ''}`} onClick={() => onPick(t)} title={t.title} aria-label={compact ? t.title : undefined}>
       <span className="tcard-thumb" style={{ aspectRatio: `${t.w} / ${t.h}` }}>
         {src ? <img src={src} alt="" /> : <span className="skeleton" />}
-        {t.pages.length > 1 && <span className="tcard-badge">{t.pages.length} pages</span>}
+        {t.pages.length > 1 && <span className="tcard-badge" aria-hidden>{t.pages.length} pages</span>}
       </span>
       {!compact && <span className="tcard-title">{t.title}</span>}
-      {!compact && <span className="tcard-sub">{t.category}</span>}
+      {!compact && <span className="tcard-sub" aria-hidden>{t.category}</span>}
     </button>
   );
 }

@@ -53,7 +53,7 @@ export function Slider({ label, value, min, max, step = 1, onChange, format }: {
   return (
     <label className="slider">
       <span className="slider-row"><span>{label}</span><output>{format ? format(value) : Math.round(value)}</output></span>
-      <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(+e.target.value)} />
+      <input type="range" aria-label={label} min={min} max={max} step={step} value={value} onChange={(e) => onChange(+e.target.value)} />
     </label>
   );
 }
