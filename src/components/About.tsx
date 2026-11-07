@@ -6,13 +6,13 @@ import { LegalFooter } from './Legal';
 
 const FAQ: [string, string][] = [
   ['Is it really free?', 'Yes. Every template, element, font and export is free, with no watermark and no trial. If Paperhand is useful to you, you can chip in once as a supporter. Supporters get a thank-you, not extra features.'],
-  ['Where are my designs kept?', 'In this browser, on this device, in its built-in storage. There is no account and no server holding your work. Clearing your browser’s site data deletes your designs too, so download anything you want to keep as PNG or PDF.'],
+  ['Where are my designs kept?', 'In this browser, on this device, in its built-in storage. There is no account and no server holding your work. Clearing your browser’s site data deletes your designs too, so use Back up everything on the home screen to save a copy, and Open a design file to bring it back on any device.'],
   ['Do you use generative AI?', 'No. Templates, illustrations and photos are made by people or drawn in code, and Paperhand never generates content for you. The one machine-learning tool is the background remover: you choose when to run it, it only edits your photo, and it runs on your device.'],
   ['Is my photo uploaded when I remove a background?', 'No. The first time you use an AI cut-out, your browser downloads the model (25–110 MB) from Hugging Face and keeps it. The photo itself never leaves your device. For plain backgrounds there is an instant method that needs no download at all.'],
   ['Can I use what I make commercially?', 'Yes. The templates, illustrations and generated photos are original to Paperhand, and the fonts are open-licensed (SIL Open Font License).'],
-  ['Can I import designs from other tools?', 'Not yet. You can drop in images, SVGs and PNGs from anywhere, and download PNG, JPG, PDF or SVG.'],
-  ['Does it work on a phone?', 'Yes, in any modern mobile browser. It is easiest on a tablet or computer.'],
-  ['Does it work offline?', 'Not yet as an installed app. It is on the list.'],
+  ['Can I import designs from other tools?', 'Not from other design apps. You can drop in images, SVGs and PNGs from anywhere, download PNG, JPG, PDF or SVG, and move your own designs between devices as Paperhand files.'],
+  ['Does it work on a phone?', 'Yes, in any modern mobile browser, and as an Android app. It is easiest on a tablet or computer.'],
+  ['Does it work offline?', 'Yes. After your first visit, install it from your browser (or use the Android app) and it opens and works without a connection. Only the AI background-removal methods need the internet, once, to download their model.'],
 ];
 
 export function About() {

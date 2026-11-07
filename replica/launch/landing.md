@@ -23,5 +23,4 @@ design tokens (0 AA failures), no horizontal scroll at 390px, no console errors.
 - No testimonials, user counts, star ratings, press logos or "trusted by" rows (`e2e` checks for these).
 - No reviewer quotes from the research.
 - No competitor name, and no comparison table. A factual comparison page is a question for a lawyer first.
-- No claim about working offline or exporting a design file, because neither is built yet (fixes X3, X4).
-  Add them to the page when they ship.
+- Offline install (X3) and design files (X4) have shipped; the FAQ answers now say so.
