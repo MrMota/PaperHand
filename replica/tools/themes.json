@@ -1,0 +1,216 @@
+{
+ "_doc": "theme -> {kind: hate|missing|unsolved, patterns: regexes matched case-insensitively}",
+ "Subscription, billing and refunds": {
+  "kind": "hate",
+  "patterns": [
+   "subscri",
+   "charg(ed|ing)",
+   "refund",
+   "cancel",
+   "billing",
+   "auto.?renew",
+   "free trial",
+   "trial"
+  ]
+ },
+ "Paywall: free tier keeps shrinking / everything is Pro": {
+  "kind": "hate",
+  "patterns": [
+   "paywall",
+   "\\bpro\\b",
+   "premium",
+   "pay (for|to)",
+   "not free",
+   "used to be free",
+   "crown",
+   "upgrade"
+  ]
+ },
+ "Price too high or rising": {
+  "kind": "hate",
+  "patterns": [
+   "price",
+   "expensive",
+   "cost",
+   "afford",
+   "\\$\\d+",
+   "per (month|year)",
+   "increase"
+  ]
+ },
+ "Bugs, crashes and glitches": {
+  "kind": "hate",
+  "patterns": [
+   "crash",
+   "bug",
+   "glitch",
+   "freez",
+   "broken",
+   "not working",
+   "doesn'?t work",
+   "won'?t (open|load|work)",
+   "error"
+  ]
+ },
+ "Slow, laggy or heavy": {
+  "kind": "hate",
+  "patterns": [
+   "slow",
+   "lag",
+   "load(ing)? (forever|time)",
+   "takes forever",
+   "sluggish",
+   "heavy"
+  ]
+ },
+ "Lost work / saving problems": {
+  "kind": "hate",
+  "patterns": [
+   "lost (my|all)",
+   "didn'?t save",
+   "not sav",
+   "disappear",
+   "deleted my",
+   "gone",
+   "autosave"
+  ]
+ },
+ "Login, account and access problems": {
+  "kind": "hate",
+  "patterns": [
+   "log ?in",
+   "sign ?in",
+   "account",
+   "locked out",
+   "password",
+   "verification"
+  ]
+ },
+ "Unwanted AI push": {
+  "kind": "hate",
+  "patterns": [
+   "\\bai\\b",
+   "magic (studio|write|media|design)",
+   "generative",
+   "chatgpt"
+  ]
+ },
+ "Mobile editing is fiddly": {
+  "kind": "hate",
+  "patterns": [
+   "iphone",
+   "ipad",
+   "phone",
+   "mobile",
+   "small screen",
+   "tap",
+   "zoom"
+  ]
+ },
+ "Text editing and fonts": {
+  "kind": "hate",
+  "patterns": [
+   "font",
+   "text box",
+   "typing",
+   "spell"
+  ]
+ },
+ "Export and download quality": {
+  "kind": "hate",
+  "patterns": [
+   "download",
+   "export",
+   "pdf",
+   "resolution",
+   "quality",
+   "blurry",
+   "png",
+   "watermark"
+  ]
+ },
+ "Customer support": {
+  "kind": "hate",
+  "patterns": [
+   "support",
+   "customer service",
+   "no response",
+   "help ?desk",
+   "contacted"
+  ]
+ },
+ "Background removal": {
+  "kind": "missing",
+  "patterns": [
+   "background remov",
+   "remove (the )?background",
+   "bg remov",
+   "cut ?out"
+  ]
+ },
+ "Feature requests (asked for by name)": {
+  "kind": "missing",
+  "patterns": [
+   "wish",
+   "please add",
+   "would (be|love) (nice|great|to)",
+   "should (add|have|let)",
+   "need (a|an|the|to be able)",
+   "feature request",
+   "can'?t (even )?(change|add|move|edit)"
+  ]
+ },
+ "Offline use / works without internet": {
+  "kind": "unsolved",
+  "patterns": [
+   "offline",
+   "without (an )?internet",
+   "no internet",
+   "wifi",
+   "connection",
+   "need to be online",
+   "be online"
+  ]
+ },
+ "Privacy, data ownership and AI training": {
+  "kind": "unsolved",
+  "patterns": [
+   "privacy",
+   "my data",
+   "train(ing|ed)? (on|their|ai)",
+   "own(ership)? of",
+   "terms of (service|use)",
+   "tracking",
+   "telemetry",
+   "pii",
+   "little snitch",
+   "transferring data",
+   "train ai",
+   "used to train"
+  ]
+ },
+ "Lock-in / can't get designs out": {
+  "kind": "unsolved",
+  "patterns": [
+   "lock.?in",
+   "locked in",
+   "vendor",
+   "proprietary",
+   "export my designs",
+   "open (source|format)",
+   "self.?host"
+  ]
+ },
+ "Account required / subscription funnel": {
+  "kind": "unsolved",
+  "patterns": [
+   "account required",
+   "requires? (a )?canva account",
+   "make an account",
+   "authenticate",
+   "funnel",
+   "upsell",
+   "loss leader"
+  ]
+ }
+}

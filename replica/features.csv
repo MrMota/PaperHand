@@ -73,3 +73,9 @@ Duotone photo effect,photo,could,yes,no,added at diff time
 Version history,editor,could,yes,no,added at diff time; possible locally
 Spell check in text,text,could,yes,no,added at diff time
 Cloud sync across devices,platform,skip,yes,skip,needs accounts and a backend
+No generative AI; AI tools opt-in with a setting to hide them,branding,must,no,partial,from fixes X1; BG removal is opt-in; hide-AI setting not built
+Nothing locked: no crowns or watermarks or trials,platform,must,no,yes,from fixes X2
+Works offline and installable (PWA),platform,must,no,no,from fixes X3
+Export/import design file and back up everything,home,must,no,no,from fixes X4
+No assistants or popups over the canvas (tested),editor,should,no,partial,from fixes X5; true today; test not written
+In-app What's new; never silently remove features,platform,should,no,no,from fixes X6
