@@ -15,9 +15,12 @@ test('F11-E1 rename, duplicate and delete from home', async ({ page }) => {
   await blank(page, 'Social banner');
   await saved(page);
   await page.goto('/');
-  page.once('dialog', (d) => d.accept('My banner'));
   await page.getByRole('button', { name: 'Options for Social banner' }).click();
   await page.getByRole('menuitem', { name: 'Rename' }).click();
+  const dlg = page.getByRole('dialog', { name: 'Rename design' });
+  await dlg.getByLabel('Name').fill('My banner');
+  await dlg.getByRole('button', { name: 'Save name' }).click();
+  await expect(dlg).toBeHidden();
   await expect(page.getByRole('link', { name: /^My banner/ })).toBeVisible();
   await page.getByRole('button', { name: 'Options for My banner' }).click();
   await page.getByRole('menuitem', { name: 'Make a copy' }).click();

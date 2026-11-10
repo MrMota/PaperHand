@@ -1,8 +1,8 @@
-import { isNative } from './native';
+import { isDesktop, isNative } from './native';
 
 /** Registers the service worker (web only, production only) and reports when an update is waiting. */
 export function registerServiceWorker() {
-  if (isNative() || !import.meta.env.PROD || !('serviceWorker' in navigator)) return;
+  if (isNative() || isDesktop() || !import.meta.env.PROD || !('serviceWorker' in navigator)) return;
   window.addEventListener('load', async () => {
     try {
       const reg = await navigator.serviceWorker.register('./sw.js', { scope: './' });

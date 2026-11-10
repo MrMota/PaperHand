@@ -11,7 +11,9 @@
     "android:sync": "vite build && cap sync android",
     "android:debug": "npm run android:sync && cd android && ./gradlew assembleDebug",
     "android:release": "npm run android:sync && cd android && ./gradlew assembleRelease bundleRelease",
-    "android:open": "cap open android"
+    "android:open": "cap open android",
+    "desktop:start": "vite build && cd desktop && npm run start",
+    "desktop:win": "vite build && cd desktop && npm run dist:win"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",

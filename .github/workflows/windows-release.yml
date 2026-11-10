@@ -1,0 +1,115 @@
+# Builds the Windows desktop app (Electron) on a Windows runner, smoke-tests the packaged app,
+# and adds the installer and portable .exe to the GitHub Release for the version.
+# Trigger either way:
+#   - push a version tag:   git tag v1.0.1 && git push origin v1.0.1
+#   - or Actions → "Windows release" → Run workflow, with a version like v1.0.1
+name: Windows release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, e.g. v1.0.1 (leave empty for a test build without a release)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            desktop/package-lock.json
+
+      - name: Work out the version
+        id: v
+        run: |
+          VERSION="${{ inputs.version }}"
+          [ -n "$VERSION" ] || VERSION="${GITHUB_REF_NAME}"
+          [ "${GITHUB_REF_TYPE}" = "tag" ] || [ -n "${{ inputs.version }}" ] || VERSION="v0.0.0-dev.${GITHUB_RUN_NUMBER}"
+          case "$VERSION" in v*) ;; *) echo "version must start with v, e.g. v1.0.1"; exit 1;; esac
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "number=${VERSION#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build the web app
+        run: |
+          npm ci
+          npx tsc -b
+          npx vite build
+
+      - name: Package for Windows
+        working-directory: desktop
+        run: |
+          npm ci
+          npm version "${{ steps.v.outputs.number }}" --no-git-tag-version --allow-same-version
+          npm run dist:win
+          ls -la release
+
+      - name: Smoke-test the packaged app
+        run: node desktop/smoke.cjs "desktop/release/win-unpacked/Paperhand.exe"
+
+      - name: Checksums
+        id: files
+        working-directory: desktop/release
+        run: |
+          N="${{ steps.v.outputs.number }}"
+          SETUP="Paperhand-Setup-$N-x64.exe"
+          PORTABLE="Paperhand-$N-x64-portable.exe"
+          sha256sum "$SETUP" > "$SETUP.sha256"
+          sha256sum "$PORTABLE" > "$PORTABLE.sha256"
+          echo "setup=$SETUP" >> "$GITHUB_OUTPUT"
+          echo "portable=$PORTABLE" >> "$GITHUB_OUTPUT"
+          echo "setup_sha=$(cut -d' ' -f1 "$SETUP.sha256")" >> "$GITHUB_OUTPUT"
+          echo "portable_sha=$(cut -d' ' -f1 "$PORTABLE.sha256")" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the build as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paperhand-windows-${{ steps.v.outputs.version }}
+          path: |
+            desktop/release/${{ steps.files.outputs.setup }}
+            desktop/release/${{ steps.files.outputs.portable }}
+            desktop/release/*.sha256
+
+      - name: Add to the release
+        if: github.ref_type == 'tag' || inputs.version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.v.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: Paperhand ${{ steps.v.outputs.version }}
+          append_body: true
+          files: |
+            desktop/release/${{ steps.files.outputs.setup }}
+            desktop/release/${{ steps.files.outputs.setup }}.sha256
+            desktop/release/${{ steps.files.outputs.portable }}
+            desktop/release/${{ steps.files.outputs.portable }}.sha256
+          body: |
+
+            ### Windows (64-bit, Windows 10 and 11)
+
+            - **`${{ steps.files.outputs.setup }}`**: installer. Adds Paperhand to the Start menu and desktop; uninstall from *Settings → Apps*.
+            - **`${{ steps.files.outputs.portable }}`**: portable. Runs without installing; keep it anywhere.
+
+            The app isn't code-signed yet, so Windows SmartScreen may say *"Windows protected your PC"*: click **More info → Run anyway**.
+            Designs are stored on your PC in `%APPDATA%\Paperhand`.
+
+            SHA-256 (installer): `${{ steps.files.outputs.setup_sha }}`
+            SHA-256 (portable): `${{ steps.files.outputs.portable_sha }}`
+
+            Windows build from ${{ github.sha }}, smoke-tested on windows-latest before publishing.

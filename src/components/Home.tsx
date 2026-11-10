@@ -4,7 +4,7 @@ import { backupEverything, deleteEverything, downloadDesignFile, importFile } fr
 import { loadDesign } from '../store/db';
 import { LegalFooter } from './Legal';
 import { canInstall, promptInstall } from '../platform/pwa';
-import { isNative } from '../platform/native';
+import { isDesktop, isNative } from '../platform/native';
 import { Download as DownloadIcon } from 'lucide-react';
 import { Btn, Chips, Logo, Modal, Search, useToast } from './ui';
 import { TemplateCard } from './TemplateCard';
@@ -32,7 +32,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
   const toast = useToast();
 
   const refresh = () => listDesigns().then(setDesigns);
-  useEffect(() => { refresh(); document.title = 'Paperhand — design by hand, in your browser'; }, []);
+  useEffect(() => { refresh(); document.title = isDesktop() ? 'Paperhand' : 'Paperhand — design by hand, in your browser'; }, []);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -144,6 +144,7 @@ export function Home({ view, initialCat }: { view: 'home' | 'templates'; initial
 
 function DesignCard({ d, onChange }: { d: DesignMeta; onChange: () => void }) {
   const [menu, setMenu] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const toast = useToast();
   const ago = timeAgo(d.updatedAt);
   return (
@@ -157,14 +158,28 @@ function DesignCard({ d, onChange }: { d: DesignMeta; onChange: () => void }) {
         <button className="icon-btn icon-btn-sm" aria-label={`Options for ${d.title}`} aria-expanded={menu} onClick={() => setMenu((m) => !m)}><MoreHorizontal size={16} /></button>
         {menu && (
           <div className="menu" role="menu" onMouseLeave={() => setMenu(false)}>
-            <button role="menuitem" onClick={async () => { const t = prompt('Rename design', d.title); if (t) { await renameDesign(d.id, t); onChange(); } setMenu(false); }}><Pencil size={14} /> Rename</button>
+            <button role="menuitem" onClick={() => { setMenu(false); setRenaming(true); }}><Pencil size={14} /> Rename</button>
             <button role="menuitem" onClick={async () => { await duplicateDesign(d.id); onChange(); setMenu(false); toast('Design duplicated', 'success'); }}><Copy size={14} /> Make a copy</button>
             <button role="menuitem" onClick={async () => { const full = await loadDesign(d.id); if (full) downloadDesignFile(full); setMenu(false); }}><FileDown size={14} /> Download design file</button>
             <button role="menuitem" className="danger" onClick={async () => { if (confirm(`Delete “${d.title}”? This cannot be undone.`)) { await deleteDesign(d.id); onChange(); } setMenu(false); }}><Trash2 size={14} /> Delete</button>
           </div>
         )}
       </div>
+      {renaming && <RenameDialog title={d.title} onClose={() => setRenaming(false)} onSave={async (t) => { await renameDesign(d.id, t); onChange(); }} />}
     </div>
+  );
+}
+
+function RenameDialog({ title, onClose, onSave }: { title: string; onClose: () => void; onSave: (t: string) => Promise<void> }) {
+  const [value, setValue] = useState(title);
+  const clean = value.trim();
+  return (
+    <Modal title="Rename design" onClose={onClose}>
+      <form className="form" onSubmit={async (e) => { e.preventDefault(); if (!clean) return; await onSave(clean.slice(0, 200)); onClose(); }}>
+        <label className="field"><span>Name</span><input value={value} onChange={(e) => setValue(e.target.value)} maxLength={200} autoFocus onFocus={(e) => e.target.select()} /></label>
+        <Btn variant="primary" type="submit" className="btn-block" disabled={!clean}>Save name</Btn>
+      </form>
+    </Modal>
   );
 }
 

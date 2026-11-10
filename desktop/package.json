@@ -1,0 +1,70 @@
+{
+  "name": "paperhand-desktop",
+  "productName": "Paperhand",
+  "version": "1.0.0",
+  "description": "Paperhand: a design studio for making things by hand. No account, no generative AI, works offline.",
+  "author": "MrMota",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "prepare-web": "node scripts/copy-web.cjs",
+    "start": "npm run prepare-web && electron .",
+    "dist:win": "npm run prepare-web && electron-builder --win --x64 --publish never",
+    "dist:dir": "npm run prepare-web && electron-builder --dir --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.2.3",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "com.mrmota.paperhand",
+    "productName": "Paperhand",
+    "copyright": "Copyright \u00a9 2026 MrMota",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "icon.png",
+      "web/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Paperhand",
+      "artifactName": "Paperhand-Setup-${version}-x64.${ext}"
+    },
+    "portable": {
+      "artifactName": "Paperhand-${version}-x64-portable.${ext}"
+    },
+    "publish": null
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrMota/pigment.git"
+  }
+}
