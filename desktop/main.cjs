@@ -55,7 +55,7 @@ function buildMenu() {
     { label: 'File', submenu: [{ role: 'quit' }] },
     { label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] },
     { label: 'View', submenu: [{ role: 'reload' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }, { role: 'toggleDevTools' }] },
-    { label: 'Help', submenu: [{ label: 'Report a problem', click: () => shell.openExternal('https://github.com/MrMota/pigment/issues') }] },
+    { label: 'Help', submenu: [{ label: 'Report a problem', click: () => shell.openExternal('https://github.com/MrMota/PaperHand/issues') }] },
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }

@@ -56,7 +56,7 @@ Why not the others: **Cloudflare Pages caps files at 25 MiB** and the background
 
 Steps (yours):
 
-1. Netlify → *Add new site* → *Import from Git* → GitHub → `MrMota/pigment`.
+1. Netlify → *Add new site* → *Import from Git* → GitHub → `MrMota/PaperHand`.
 2. Production branch: `main` (merge `ccr-199b2d12-rnbdur` into it first). Build settings come from `netlify.toml`.
 3. *Site configuration → Environment variables*: add `VITE_SITE_URL`.
 4. Deploy. Pull requests now get preview URLs automatically.
